@@ -73,11 +73,6 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Could not find product!');
     }
-    return {
-      id: product.id,
-      title: product.title,
-      description: product.description,
-      price: product.price,
-    };
+    return product;
   }
 }
