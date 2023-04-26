@@ -36,7 +36,12 @@ export class ProductsService {
 
   async getSingleProduct(productId: string) {
     const product = await this.findProduct(productId);
-    return product;
+    return {
+      id: product.id,
+      title: product.title,
+      description: product.description,
+      price: product.price,
+    };
   }
 
   async updateProduct(
@@ -55,12 +60,16 @@ export class ProductsService {
     if (price) {
       updatedProduct.price = price;
     }
-    updatedProduct.save();
+    const result = updatedProduct.save();
   }
 
-  deleteProduct(prodId: string) {
-    const index = this.findProduct(prodId)[1];
-    this.products.splice(index, 1);
+  async deleteProduct(prodId: string) {
+    const result = await this.productModel.deleteOne({ _id: prodId }).exec();
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Ko tim thay product de xoa');
+    } else {
+      throw new NotFoundException('Deleted Success');
+    }
   }
 
   private async findProduct(id: string): Promise<Product> {
